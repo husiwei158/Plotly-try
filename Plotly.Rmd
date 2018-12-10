@@ -1,0 +1,42 @@
+---
+title: "The first try of Plotly"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(data.table)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+imdb <- fread("movies.csv")
+
+imdb.score <- imdb %>% dplyr::select(score,votes,genre,company,rating)  %>% filter(rating == "PG"|rating == "PG-13"|rating == "R")
+
+b <- ggplot(data = imdb.score)+geom_histogram(aes(x = votes),bins = 100, color = "blue")+labs(x = "Movie Votes", y = "Count of Movies", title = "Distribution of Movie Vote")+ theme(axis.title.x = element_text(size = 12),axis.title.y = element_text(size = 12), plot.title = element_text(size = 15, face = "bold"))
+
+ggplotly(b)
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+plot_ly(x=imdb.score$votes, histfunc='sum', type = "histogram", color = "red")
+
+```
+
+
+
